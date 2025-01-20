@@ -1,0 +1,23 @@
+# Logback config file path
+logging:
+  config: classpath:logback-spring-dev.xml
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: pprb-quote-service
+  kafka:
+    topic: ${QUOTE_TOPIC:quote-topic}
+    bootstrap-servers: ${KAFKA_BROKERS:localhost:29092}
+    consumer:
+      concurrency: ${QUOTE_TOPIC_LISTENER_CONCURENCY:3}
+      executor-service-thread-pool-size: ${QUOTE_EXECUTOR_SERVICE_THREAD_POOL_SIZE:10}
+  ## PostgreSQL
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/quote_service
+    username: quote_admin
+  ## Liquibase
+  liquibase:
+    change-log: classpath:db/changelog/index.xml

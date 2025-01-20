@@ -1,0 +1,99 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="SagdievIA" id="20250115090000_create_table_quote">
+        <comment>
+            KOTE-001: Создание таблицы "Котировка" (QUOTE)
+        </comment>
+
+        <createTable tableName="QUOTE" remarks="Котировка">
+            <column name="ID" type="UUID" remarks="ID Котировки">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ISIN" type="VARCHAR(12)" remarks="ISIN Котировки">
+                <constraints nullable="false"/>
+            </column>
+            <column name="BID" type="NUMERIC(10,1)" remarks="Bid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ASK" type="NUMERIC(10,1)" remarks="Ask">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATE_DATE" type="TIMESTAMP" remarks="Дата и время создания котировки">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_UPDATE_DATE" type="TIMESTAMP" remarks="Дата и время последнего обновления котировки">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="QUOTE" constraintName="PK_QUOTE_ID" columnNames="ID"/>
+        <createSequence sequenceName="seq_quote_id"/>
+    </changeSet>
+
+    <changeSet author="SagdievIA" id="20250115090000_create_table_e_lvl">
+        <comment>
+            KOTE-001: Создание таблицы "Energy level"(E_LVL)
+        </comment>
+
+        <createTable tableName="E_LVL" remarks="Energy Level">
+            <column name="ID" type="UUID" remarks="ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ISIN" type="VARCHAR(12)" remarks="ISIN Котировки">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENERGY_LEVEL" type="NUMERIC(10,1)" remarks="Energy level">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATE_DATE" type="TIMESTAMP" remarks="Дата и время создания котировки">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LAST_UPDATE_DATE" type="TIMESTAMP" remarks="Дата и время последнего обновления котировки">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet author="SagdievIA" id="20250115090000_create_table_quote_history">
+        <comment>
+            KOTE-001: Создание таблицы "История полученных котировок"(QUOTE_HISTORY)
+        </comment>
+
+        <createTable tableName="QUOTE_HISTORY" remarks="История полученных котировок">
+            <column name="ID" type="UUID" remarks="ID истории котировок">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ISIN" type="VARCHAR(12)" remarks="ISIN Котировки">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RECEIVE_DATE" type="TIMESTAMP" remarks="Дата и время получения котировки">
+                <constraints nullable="false"/>
+            </column>
+            <column name="E_LVL" type="NUMERIC(10,1)" remarks="Energy level на момент создания истории">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATE_DATE" type="TIMESTAMP" remarks="Дата создания записи в истории котировок">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="QUOTE_HISTORY" constraintName="PK_QUOTE_HISTORY_ID" columnNames="ID"/>
+
+    </changeSet>
+    <changeSet id="20250115090000_create_quote_idx" author="SagdievIA">
+        <createIndex tableName="QUOTE" indexName="IDX_QUOTE_ISIN">
+            <column name="ISIN"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="20250115090000_create_e_lvl_isin_idx" author="SagdievIA">
+        <createIndex tableName="E_LVL" indexName="IDX_E_LVL_ISIN">
+            <column name="ISIN"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
