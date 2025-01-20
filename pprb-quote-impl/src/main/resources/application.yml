@@ -1,0 +1,94 @@
+server:
+  port: ${HTTP_SERVER_PORT:8080}
+  tomcat:
+    connection-timeout: ${HTTP_SERVER_CONNECTION_TIMEOUT:60000}
+    threads:
+      max: ${SERVER_TOMCAT_THREADS_MAX:100}
+  max-http-request-header-size: ${SERVER_MAX_HTTP_HEADER_SIZE:56KB}
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: pprb-quote-service
+  kafka:
+    topic: ${QUOTE_TOPIC:quote-topic}
+    bootstrap-servers: ${KAFKA_BROKERS:localhost:29092}
+    consumer:
+      concurrency: ${QUOTE_TOPIC_LISTENER_CONCURENCY:3}
+      executor-service-thread-pool-size: ${QUOTE_EXECUTOR_SERVICE_THREAD_POOL_SIZE:10}
+      group-id: pprb-quote-service
+      auto-offset-reset: earliest
+      max-poll-records: 50
+      properties:
+        spring.json.trusted.packages: '*'
+    security:
+      protocol: SSL
+    properties:
+      ssl:
+        enabled: false
+        truststore:
+          location: ${KAFKA_TRUSTSTORE_LOCATION:}
+          password: ${KAFKA_TRUSTSTORE_PASSWORD:}
+        keystore:
+          location: ${KAFKA_KEYSTORE_LOCATION:}
+          password: ${KAFKA_KEYSTORE_PASSWORD:}
+        key:
+          password: ${KAFKA_KEY_PASSWORD:}
+        truststore-type: ${KAFKA_TRUSTSTORE_TYPE:JKS}
+        keystore-type: ${KAFKA_KEYSTORE_TYPE:JKS}
+        endpoint:
+          identification:
+            algorithm: ""
+  ## PostgreSQL
+  datasource:
+    password: ${DATASOURCE_PASSWORD:postgres}
+    url: jdbc:postgresql://localhost:5432/quote_service
+    username: ${DATASOURCE_USERNAME:quote_admin}
+    ## Liquibase
+  liquibase:
+    change-log: classpath:db/changelog/index.xml
+  ## JPA
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  ## Liquibase
+
+  cloud:
+    discovery:
+      client:
+        composite-indicator:
+          enabled: false
+
+## Конфиг метрик
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,loggers,prometheus,bindings,metrics
+  health:
+    db:
+      enabled: true
+    defaults:
+      enabled: false
+
+logging:
+  level:
+    root: ${LOGGING_LEVEL_ROOT:info}
+
+springdoc:
+  pre-loading-enabled: true
+  show-actuator: true
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:true}
+    disable-swagger-default-url: false
+  api-docs:
+    enabled: true
+  enable-spring-security: true
